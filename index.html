@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House of J&S Computer Training Center | Oxford Computing 9 — Unit 1</title>
+<style>
+:root{
+  --navy:#0b2545; --navy2:#13315c; --blue:#1d4ed8; --gold:#f0a500;
+  --bg:#eef2f9; --card:#ffffff; --text:#16213e; --muted:#5a6a85;
+  --ok:#0f9d58; --bad:#d64545; --line:#dbe3f0;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.8; font-size:15.5px;
+}
+h1,h2,h3,h4{margin:0 0 .5em; line-height:1.4}
+p{margin:0 0 .8em}
+a{color:var(--blue)}
+
+/* ============ LOGIN ============ */
+#loginScreen{
+  position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#0b2545 0%,#13315c 55%,#1d4ed8 100%);
+  padding:20px; z-index:999;
+}
+.login-card{
+  background:#fff; border-radius:20px; padding:38px 32px; width:100%; max-width:420px;
+  box-shadow:0 24px 60px rgba(0,0,0,.35); text-align:center; animation:pop .45s ease;
+}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.logo{width:110px; height:110px; object-fit:contain; display:block; margin:0 auto 10px}
+.brand{font-size:19px; font-weight:800; color:var(--navy); letter-spacing:.2px}
+.brand small{display:block; font-size:12.5px; font-weight:600; color:var(--muted); letter-spacing:.6px; margin-top:2px}
+.login-card h2{font-size:16px; color:var(--navy2); margin:18px 0 14px; font-weight:700}
+.login-card input{
+  width:100%; padding:13px 15px; margin-bottom:12px; border:1.6px solid var(--line);
+  border-radius:11px; font-size:15px; font-family:inherit; outline:none; transition:.2s;
+  background:#f9fbff;
+}
+.login-card input:focus{border-color:var(--blue); background:#fff; box-shadow:0 0 0 4px rgba(29,78,216,.1)}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  border:none; border-radius:11px; padding:13px 22px; font-size:15px; font-weight:700;
+  font-family:inherit; cursor:pointer; transition:.18s; text-decoration:none;
+}
+.btn-primary{background:var(--navy); color:#fff; width:100%}
+.btn-primary:hover{background:var(--blue); transform:translateY(-1px)}
+.btn-gold{background:var(--gold); color:#20232a}
+.btn-gold:hover{filter:brightness(1.08)}
+.btn-ghost{background:#eef2f9; color:var(--navy)}
+.btn-ghost:hover{background:#dde6f6}
+.btn-danger{background:var(--bad); color:#fff}
+.login-err{color:var(--bad); font-size:13.5px; font-weight:600; min-height:22px; margin-top:6px}
+.login-foot{font-size:12px; color:var(--muted); margin-top:16px; line-height:1.6}
+
+/* ============ APP SHELL ============ */
+#app{display:none}
+header.topbar{
+  position:sticky; top:0; z-index:60; background:var(--navy); color:#fff;
+  padding:10px 18px; display:flex; align-items:center; gap:14px;
+  box-shadow:0 3px 14px rgba(11,37,69,.28); flex-wrap:wrap;
+}
+header.topbar img{width:44px;height:44px;object-fit:contain;background:#fff;border-radius:10px;padding:3px}
+header.topbar .t-title{font-size:15px; font-weight:800; line-height:1.25}
+header.topbar .t-sub{font-size:11.5px; color:#a9c0e8; font-weight:600; letter-spacing:.4px}
+header.topbar .spacer{flex:1}
+.userchip{
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22);
+  padding:7px 14px; border-radius:999px; font-size:13px; font-weight:700;
+  display:flex; align-items:center; gap:8px;
+}
+.userchip .dot{width:8px;height:8px;border-radius:50%;background:#38d39f;box-shadow:0 0 8px #38d39f}
+nav.tabs{
+  position:sticky; top:64px; z-index:55; background:#fff; border-bottom:1px solid var(--line);
+  display:flex; gap:4px; padding:0 14px; overflow-x:auto;
+}
+nav.tabs button{
+  border:none; background:none; font-family:inherit; font-size:14px; font-weight:700;
+  color:var(--muted); padding:14px 16px; cursor:pointer; border-bottom:3px solid transparent;
+  white-space:nowrap; transition:.18s;
+}
+nav.tabs button:hover{color:var(--navy)}
+nav.tabs button.active{color:var(--blue); border-bottom-color:var(--blue)}
+main{max-width:1000px; margin:0 auto; padding:22px 16px 80px}
+.screen{display:none}
+.screen.active{display:block; animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ============ NOTES ============ */
+.hero{
+  background:linear-gradient(120deg,var(--navy),#1d4ed8); color:#fff; border-radius:18px;
+  padding:26px 24px; margin-bottom:20px; box-shadow:0 10px 30px rgba(29,78,216,.22);
+}
+.hero h1{font-size:22px; margin-bottom:6px}
+.hero p{margin:0; color:#d7e3ff; font-size:14px}
+.hero .tags{margin-top:14px; display:flex; gap:8px; flex-wrap:wrap}
+.hero .tags span{background:rgba(255,255,255,.16); padding:5px 12px; border-radius:999px; font-size:12px; font-weight:700}
+
+details.note{
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+  margin-bottom:14px; box-shadow:0 2px 10px rgba(16,38,74,.05); overflow:hidden;
+}
+details.note>summary{
+  cursor:pointer; padding:15px 18px; font-weight:800; font-size:15.5px; color:var(--navy);
+  background:linear-gradient(90deg,#f7faff,#fff); list-style:none; display:flex; align-items:center; gap:10px;
+  border-left:5px solid var(--blue); user-select:none;
+}
+details.note>summary::-webkit-details-marker{display:none}
+details.note>summary::after{content:'▾'; margin-left:auto; color:var(--muted); font-size:14px; transition:.2s}
+details.note[open]>summary::after{transform:rotate(180deg)}
+details.note>summary:hover{background:#eef4ff}
+.note-body{padding:6px 18px 20px; border-top:1px solid var(--line)}
+.note-body h4{color:var(--navy2); font-size:14.5px; margin:18px 0 8px; padding-left:10px; border-left:4px solid var(--gold)}
+.note-body ul,.note-body ol{margin:6px 0 12px; padding-left:22px}
+.note-body li{margin-bottom:5px}
+.kw{background:#fff3cd; padding:1px 6px; border-radius:5px; font-weight:700; color:#7a5300}
+
+table.ntable{width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:14px; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 6px rgba(16,38,74,.07)}
+table.ntable th{background:var(--navy); color:#fff; text-align:left; padding:10px 12px; font-size:13.5px; font-weight:700}
+table.ntable td{padding:10px 12px; border-top:1px solid var(--line); vertical-align:top}
+table.ntable tr:nth-child(even) td{background:#f9fbff}
+table.ntable td:first-child{font-weight:700; color:var(--navy2)}
+
+.callout{border-radius:12px; padding:13px 16px; margin:12px 0; font-size:14px; border-left:5px solid}
+.callout.info{background:#eaf2ff; border-color:var(--blue); color:#123a7a}
+.callout.warn{background:#fff4e5; border-color:#f0a500; color:#7a5300}
+.callout.tip{background:#e9f8f0; border-color:var(--ok); color:#0a6b41}
+.callout b{font-weight:800}
+
+.flow{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:12px 0}
+.flow .step{background:#eaf2ff; border:1.5px solid #b9d0ff; color:#123a7a; padding:7px 13px; border-radius:999px; font-size:13px; font-weight:700}
+.flow .arr{color:var(--muted); font-weight:800}
+
+/* ============ EXAM ============ */
+.exam-start{
+  background:var(--card); border-radius:18px; padding:34px 26px; text-align:center;
+  border:1px solid var(--line); box-shadow:0 8px 28px rgba(16,38,74,.08);
+}
+.exam-start h2{color:var(--navy); font-size:22px}
+.exam-start .grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;
+  margin:22px 0; text-align:left;
+}
+.exam-start .grid div{background:#f7faff; border:1px solid var(--line); border-radius:12px; padding:13px 15px}
+.exam-start .grid b{display:block; color:var(--navy); font-size:14px}
+.exam-start .grid span{font-size:13px; color:var(--muted)}
+.rules{text-align:left; background:#fff6f6; border:1.5px solid #f6c9c9; border-radius:12px; padding:14px 18px; font-size:13.5px; color:#8a2020; margin-bottom:22px}
+.rules ul{margin:6px 0 0; padding-left:20px}
+
+.exam-top{
+  position:sticky; top:64px; z-index:50; background:#fff; border:1px solid var(--line);
+  border-radius:14px; padding:12px 16px; display:flex; align-items:center; gap:14px;
+  margin-bottom:16px; box-shadow:0 3px 14px rgba(16,38,74,.08); flex-wrap:wrap;
+}
+.timer{font-variant-numeric:tabular-nums; font-weight:800; font-size:19px; color:var(--navy); letter-spacing:1px}
+.timer.low{color:var(--bad); animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.45}}
+.progress-wrap{flex:1; min-width:140px}
+.progress-bar{height:9px; background:#e6edf9; border-radius:99px; overflow:hidden}
+.progress-bar i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--blue),#38d39f); transition:width .3s}
+
+#examArea{user-select:none; -webkit-user-select:none; -ms-user-select:none}
+#examArea textarea,#examArea input,#examArea select{user-select:text; -webkit-user-select:text}
+
+.sec-title{
+  background:linear-gradient(90deg,var(--navy),#1d4ed8); color:#fff; border-radius:12px;
+  padding:12px 18px; font-weight:800; margin:26px 0 14px; font-size:15px;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;
+}
+.sec-title span{font-size:12.5px; font-weight:700; opacity:.9}
+
+.qcard{background:#fff; border:1px solid var(--line); border-radius:13px; padding:16px 18px; margin-bottom:13px}
+.qcard .qtext{font-weight:700; color:var(--navy); margin-bottom:2px}
+.opts{display:grid; gap:8px}
+.opt{
+  display:flex; align-items:flex-start; gap:10px; padding:10px 13px; border:1.6px solid var(--line);
+  border-radius:10px; cursor:pointer; transition:.15s; background:#fbfcff; font-size:14.5px;
+}
+.opt:hover{border-color:#a8c2f5; background:#f2f7ff}
+.opt input{margin-top:4px; accent-color:var(--blue); width:16px; height:16px; flex:none; cursor:pointer}
+.opt.sel{border-color:var(--blue); background:#eaf2ff; box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.opt b{color:var(--blue); margin-right:2px}
+
+input.fill{
+  width:100%; padding:11px 14px; border:1.6px solid var(--line); border-radius:10px;
+  font-family:inherit; font-size:15px; outline:none; background:#fbfcff;
+}
+input.fill:focus{border-color:var(--blue); background:#fff}
+textarea.ans{
+  width:100%; min-height:95px; padding:12px 14px; border:1.6px solid var(--line); border-radius:10px;
+  font-family:inherit; font-size:14.5px; line-height:1.7; outline:none; resize:vertical; background:#fbfcff;
+}
+textarea.ans:focus{border-color:var(--blue); background:#fff}
+textarea.ans.long{min-height:150px}
+
+.match-table{width:100%; border-collapse:collapse; font-size:14px}
+.match-table th{background:#f2f6ff; color:var(--navy); padding:9px 11px; text-align:left; border:1px solid var(--line); font-size:13px}
+.match-table td{border:1px solid var(--line); padding:9px 11px; vertical-align:middle}
+.match-table td.colA{width:28%; font-weight:700; color:var(--navy2)}
+.match-table select{
+  width:100%; padding:9px 10px; border:1.6px solid var(--line); border-radius:9px;
+  font-family:inherit; font-size:14px; background:#fbfcff; outline:none; cursor:pointer;
+}
+.match-table select:focus{border-color:var(--blue)}
+.match-table select.picked{border-color:var(--blue); background:#eaf2ff; font-weight:700}
+.colB-list{background:#f7faff; border:1px solid var(--line); border-radius:12px; padding:13px 16px; margin-bottom:14px; font-size:14px}
+.colB-list div{padding:6px 0; border-bottom:1px dashed var(--line)}
+.colB-list div:last-child{border-bottom:none}
+.colB-list b{color:var(--blue); display:inline-block; width:22px}
+
+.submit-bar{margin:30px 0 10px; text-align:center}
+.submit-bar .btn{min-width:220px; font-size:16px; padding:16px 26px}
+
+/* ============ RESULT ============ */
+.score-hero{
+  background:linear-gradient(135deg,#0b2545,#1d4ed8); color:#fff; border-radius:20px;
+  padding:32px 24px; text-align:center; margin-bottom:20px; box-shadow:0 14px 40px rgba(29,78,216,.28);
+}
+.score-circle{
+  width:158px; height:158px; border-radius:50%; margin:0 auto 16px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:conic-gradient(#38d39f var(--p), rgba(255,255,255,.16) 0);
+  position:relative;
+}
+.score-circle::after{content:''; position:absolute; inset:12px; border-radius:50%; background:#0e2a55}
+.score-circle .num{position:relative; z-index:2; font-size:38px; font-weight:900; line-height:1}
+.score-circle .den{position:relative; z-index:2; font-size:13px; color:#a9c0e8; font-weight:700}
+.score-hero h2{font-size:20px; margin:8px 0 4px}
+.score-hero .pct{font-size:15px; color:#c9dbff; font-weight:700}
+.grade-badge{display:inline-block; margin-top:12px; padding:7px 22px; border-radius:999px; font-weight:800; font-size:15px; background:var(--gold); color:#20232a}
+
+.breakdown{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:22px}
+.breakdown div{background:#fff; border:1px solid var(--line); border-radius:13px; padding:14px; text-align:center}
+.breakdown b{display:block; font-size:20px; color:var(--navy)}
+.breakdown span{font-size:12.5px; color:var(--muted); font-weight:700}
+
+.rev-card{background:#fff; border:1px solid var(--line); border-left:6px solid var(--line); border-radius:12px; padding:15px 17px; margin-bottom:12px}
+.rev-card.ok{border-left-color:var(--ok)}
+.rev-card.part{border-left-color:var(--gold)}
+.rev-card.bad{border-left-color:var(--bad)}
+.rev-head{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:6px; flex-wrap:wrap}
+.rev-head .qn{font-weight:800; color:var(--navy)}
+.mark-pill{font-size:12.5px; font-weight:800; padding:4px 12px; border-radius:999px; white-space:nowrap}
+.mark-pill.ok{background:#e3f6ec; color:#0a6b41}
+.mark-pill.part{background:#fff3cd; color:#7a5300}
+.mark-pill.bad{background:#fdeaea; color:#a02020}
+.rev-q{font-weight:600; margin-bottom:8px}
+.rev-line{font-size:14px; margin:5px 0; padding:8px 12px; border-radius:8px; background:#f8faff; border:1px dashed var(--line)}
+.rev-line b{color:var(--navy2)}
+.rev-line.stu{background:#fffaf0; border-color:#f3ddb0}
+.rev-line.cor{background:#eefaf3; border-color:#bfe8d3}
+.rev-exp{background:#f4f7ff; border-left:4px solid var(--blue); border-radius:8px; padding:11px 14px; font-size:14px; margin-top:9px; color:#173a6d}
+.rev-exp b{color:var(--navy)}
+.keys-line{font-size:13px; color:var(--muted); margin-top:7px}
+
+/* ============ OVERLAY ============ */
+#overlay{
+  position:fixed; inset:0; background:rgba(8,20,42,.94); z-index:900;
+  display:none; align-items:center; justify-content:center; padding:20px; text-align:center; color:#fff;
+}
+#overlay.show{display:flex}
+#overlay .box{max-width:480px}
+#overlay h2{color:#ff7b7b; font-size:24px}
+#overlay p{color:#c9d8f2}
+#overlay .btn{margin-top:16px}
+
+@media (max-width:640px){
+  header.topbar{padding:8px 12px}
+  header.topbar .t-title{font-size:13px}
+  header.topbar .t-sub{font-size:10px}
+  nav.tabs{top:60px}
+  main{padding:14px 10px 70px}
+  .hero h1{font-size:18px}
+  .score-circle{width:130px;height:130px}
+  .score-circle .num{font-size:30px}
+  table.ntable{font-size:13px}
+  table.ntable th,table.ntable td{padding:8px}
+}
+@media print{body{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen">
+  <div class="login-card">
+    <img src="logo1.png" alt="House of J&S Logo" class="logo">
+    <div class="brand">House of J&amp;S<small>COMPUTER TRAINING CENTER</small></div>
+    <h2>Oxford Computing 9 — Unit 1<br>Student Login</h2>
+    <form id="loginForm" autocomplete="off">
+      <input type="text" id="studentName" placeholder="Student Name" maxlength="40">
+      <input type="password" id="password" placeholder="Password" maxlength="20">
+      <button type="submit" class="btn btn-primary">Log In</button>
+    </form>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-foot">© House of J&amp;S Computer Training Center<br>Oxford Computing 9 (Third Edition) — Unit 1: Creative Media</div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <header class="topbar">
+    <img src="logo1.png" alt="Logo">
+    <div>
+      <div class="t-title">House of J&amp;S Computer Training Center</div>
+      <div class="t-sub">OXFORD COMPUTING 9 · UNIT 1 · CREATIVE MEDIA</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="userchip"><span class="dot"></span><span id="userName">Student</span></div>
+    <button class="btn btn-ghost" style="padding:8px 14px;font-size:13px" onclick="logout()">Log Out</button>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="notes" class="active">📘 Study Notes</button>
+    <button data-tab="exam">📝 Exam</button>
+    <button data-tab="result" id="tabResult" style="display:none">📊 Result</button>
+  </nav>
+
+  <main>
+
+    <!-- ================= STUDY NOTES ================= -->
+    <section id="tab-notes" class="screen active">
+      <div class="hero">
+        <h1>Unit 1 — Creative Media: Multimedia Content</h1>
+        <p>Bilingual study notes and English companion edition</p>
+        <div class="tags">
+          <span>1.1 Multimedia Platform</span><span>1.2 Text</span><span>1.3 Audio</span>
+          <span>1.4 Video</span><span>1.5 Host &amp; Embed</span><span>1.6 Extended Reality</span>
+        </div>
+      </div>
+
+      <!-- INTRODUCTION -->
+      <details class="note" open>
+        <summary>📌 Unit 1 Introduction — Creative Media: Multimedia Content</summary>
+        <div class="note-body">
+          <p><span class="kw">Multimedia</span> is digital content that combines different media types, such as text, images, audio and video. It is widely used in news, entertainment and education. Online platforms allow creators to publish multimedia content so that audiences can access it from different places and at different times.</p>
+          <div class="callout info"><b>Example —</b> A teacher can create an online course that includes text, audio explanations and video presentations. Students can access it from anywhere and learn at a time that suits them.</div>
+          <p>In this unit, students plan and create a multimedia project about a school Sports Day. They consider how to combine text, images, audio and video, and explore newer technologies such as virtual reality and augmented reality.</p>
+
+          <h4>Learning Objectives</h4>
+          <ul>
+            <li>Create content using a range of media types.</li>
+            <li>Bring different media together in a multimedia platform.</li>
+            <li>Explain the purpose and uses of Virtual Reality (VR), Augmented Reality (AR) and Mixed Reality (MR).</li>
+          </ul>
+
+          <h4>Group Planning</h4>
+          <ul>
+            <li>Two text articles with images — titles and images to use.</li>
+            <li>One audio programme — a podcast or news report, title and participants.</li>
+            <li>One video — title, filming location and participants.</li>
+          </ul>
+
+          <div class="callout warn">
+            <b>Publishing Responsibly —</b> When you publish on public platforms, people around the world can see your content. However, risks include revealing personal information, using photos or videos without permission, inappropriate comments and copyright infringement. Before publishing, remove personal details, get consent from participants, check privacy settings and use media you have permission to use.
+          </div>
+        </div>
+      </details>
+
+      <!-- 1.1 -->
+      <details class="note">
+        <summary>1.1 Create a Multimedia Platform</summary>
+        <div class="note-body">
+          <p>A <span class="kw">multimedia platform</span> is a service or application that allows people to create, organise, publish, share or view different types of media in one place.</p>
+
+          <h4>Platform Types</h4>
+          <table class="ntable">
+            <tr><th>Type</th><th>Typical use / examples</th></tr>
+            <tr><td>Website Hosting / Blogging</td><td>Create website pages and blog posts. WordPress, Blogger, Wix, etc.</td></tr>
+            <tr><td>Social Media</td><td>Publish text, images and videos as posts. Post size/format limits may apply.</td></tr>
+            <tr><td>Presentation &amp; Collaboration</td><td>Create presentations and collaborate, e.g. PowerPoint, Teams, Prezi, Miro, Lucidspark.</td></tr>
+            <tr><td>Educational Platform</td><td>Create online courses with lessons, activities and media, e.g. Canvas, Moodle.</td></tr>
+          </table>
+
+          <h4>Choosing a Platform</h4>
+          <ol>
+            <li><b>Audience</b> — Who will view it? Public or restricted? Consider privacy and security.</li>
+            <li><b>Content suitability</b> — Blogs suit long articles; social media suits short content.</li>
+            <li><b>Cost and availability</b> — Free services may have feature or storage limits.</li>
+          </ol>
+
+          <h4>Creating an Account</h4>
+          <p>Most platforms require an account with an email address. Fill in the sign-up page and choose a service level. Services like WordPress, Blogger and Wix let you choose a theme or template and start building.</p>
+
+          <h4>Vocabulary</h4>
+          <table class="ntable">
+            <tr><th>Term</th><th>Meaning</th></tr>
+            <tr><td>Post</td><td>Content published in a blog or social media feed, shown in date order. Newer posts usually appear at the top.</td></tr>
+            <tr><td>Page</td><td>Separate content such as About Us or Contact Us, accessed via a menu or link.</td></tr>
+            <tr><td>Widget</td><td>A small tool that adds audio, video or social media components to a website.</td></tr>
+            <tr><td>Hosting Service</td><td>A system that stores files online and serves them to users.</td></tr>
+          </table>
+
+          <h4>Using Media Hosting Services</h4>
+          <p>Some website platforms allow direct audio/video uploads but may charge for storage. File size limits may apply, and sometimes HTML code is needed. Therefore, using a dedicated hosting/streaming service and embedding the media player into the website can be easier.</p>
+          <ul>
+            <li>For video: <b>YouTube</b> or <b>Vimeo</b>.</li>
+            <li>For audio: <b>SoundCloud</b>, <b>Mixcloud</b> or <b>Podbean</b>.</li>
+          </ul>
+          <p>If online services are not available, you can combine text, images, audio and video in PowerPoint, OneNote or other offline applications. Embedding media in the file increases project file size, so choose compressed files.</p>
+
+          <h4>Step-by-Step</h4>
+          <div class="flow">
+            <span class="step">1. List platform &amp; hosting</span><span class="arr">→</span>
+            <span class="step">2. Compare</span><span class="arr">→</span>
+            <span class="step">3. Create account</span><span class="arr">→</span>
+            <span class="step">4. Choose theme/template</span><span class="arr">→</span>
+            <span class="step">5. Upload &amp; test</span>
+          </div>
+          <ol>
+            <li>List the platforms and media hosting services needed for the project.</li>
+            <li>Compare free/paid services, storage, privacy and audience needs.</li>
+            <li>Create an account with email if needed.</li>
+            <li>Choose a theme or template and build at least one main page.</li>
+            <li>Upload a small audio/video file and test success and share link.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- 1.2 -->
+      <details class="note">
+        <summary>1.2 Create Text Content</summary>
+        <div class="note-body">
+          <p>For the project, write text content individually, then collaborate with team members to edit. Publish the agreed final version on the platform. Text written by professional writers is often called <span class="kw">copy</span>.</p>
+          <p>Short text can be written directly in the website template, but for longer text a word processor is easier. Word processors offer more complete spelling, editing and formatting tools.</p>
+
+          <h4>Writing with Generative AI</h4>
+          <p><span class="kw">Generative AI</span> is a type of artificial intelligence that can create new text based on a prompt. A prompt can specify the title, information to include, writing style and length. For example, write a short news report about the school Sports Day, include that Asher won the 100m race and a quote from him.</p>
+          <div class="callout warn">
+            <b>AI Hallucination —</b> Always check AI-generated text. AI can convincingly invent wrong information or events that never happened. This is called <b>AI hallucination</b>. Verify facts separately and correct or remove anything wrong.
+          </div>
+
+          <h4>Collaborative Editing Tools</h4>
+          <table class="ntable">
+            <tr><th>Tool</th><th>Use</th></tr>
+            <tr><td>Track Changes</td><td>Shows editors' changes as mark-up. Accept or reject them.</td></tr>
+            <tr><td>Comments</td><td>Add suggestions or notes on a specific part of the text.</td></tr>
+            <tr><td>Find and Replace</td><td>Search for a word or phrase and replace it throughout.</td></tr>
+            <tr><td>Proofing</td><td>Check spelling, grammar, accuracy and formatting of final text.</td></tr>
+          </table>
+
+          <h4>Post vs Page</h4>
+          <table class="ntable">
+            <tr><th>Post</th><th>Page</th></tr>
+            <tr><td>Suitable for news and latest updates shown in chronological order.</td><td>Suitable for permanent separate content such as About Us, Contact Us.</td></tr>
+          </table>
+
+          <h4>Adding Images and Publishing</h4>
+          <p>Upload images to the platform's media library and insert them into the post/page. Arrange title, body text and images as content blocks. Before publishing, use Preview to check how it looks on phone, tablet and computer. Publish only when sure there are no errors.</p>
+
+          <h4>Step-by-Step</h4>
+          <ol>
+            <li>Set the title and purpose for the post or page.</li>
+            <li>Write a draft. If using AI, write a precise prompt and check facts.</li>
+            <li>Ask team members to review using Track Changes and Comments.</li>
+            <li>Do a final proof of spelling, facts and formatting.</li>
+            <li>Add necessary images and check Preview.</li>
+            <li>Publish the final version on the platform.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- 1.3 -->
+      <details class="note">
+        <summary>1.3 Create Audio Content</summary>
+        <div class="note-body">
+          <p>A short audio programme needs its parts organised in order. In media production, the small parts of a programme are called <span class="kw">segments</span>.</p>
+
+          <h4>Outline Plan and Script</h4>
+          <ul>
+            <li><b>Outline Plan</b> — a summary of each segment's content and order in the programme.</li>
+            <li><b>Script</b> — the detailed words to be spoken. The presentation style (formal, informal, exciting, etc.) should match the purpose.</li>
+          </ul>
+
+          <table class="ntable">
+            <tr><th>Segment</th><th>Purpose</th></tr>
+            <tr><td>Intro</td><td>Opening that introduces the programme.</td></tr>
+            <tr><td>Jingle</td><td>Short music/sound used to make the programme memorable.</td></tr>
+            <tr><td>Topic Segment</td><td>Main content, presentation or discussion.</td></tr>
+            <tr><td>Closing Remarks</td><td>Summary and thanks to audience and participants.</td></tr>
+          </table>
+
+          <h4>Recording and DAW</h4>
+          <p><span class="kw">Digital Audio Workstation (DAW)</span> is software for recording audio, arranging audio files as tracks, cutting, adjusting volume and exporting the final audio file. A smartphone or laptop's built-in microphone and voice recorder can be used for basic recording.</p>
+          <div class="callout tip"><b>Note —</b> Before recording, check the recording level. A test recording helps identify distortion and background noise.</div>
+
+          <h4>Audio Editing and Mixing</h4>
+          <table class="ntable">
+            <tr><th>Term</th><th>Meaning</th></tr>
+            <tr><td>Timeline</td><td>Area where audio clips are arranged in time order.</td></tr>
+            <tr><td>Trim</td><td>Cutting unwanted parts from the start/end of a clip.</td></tr>
+            <tr><td>Tracks</td><td>Separate lanes for different audio files.</td></tr>
+            <tr><td>Mixer</td><td>Adjusts each track's volume to balance the sound.</td></tr>
+            <tr><td>Loop Playback</td><td>Repeatedly plays a selected section for precise editing.</td></tr>
+            <tr><td>Zoom</td><td>Enlarges the waveform for detailed cuts.</td></tr>
+          </table>
+
+          <h4>Step-by-Step</h4>
+          <ol>
+            <li>Define the purpose and audience of the audio programme.</li>
+            <li>Write an outline plan including Intro, Jingle, Topic Segments and Closing.</li>
+            <li>Write scripts for the needed parts.</li>
+            <li>Check microphone and recording level; do a test recording.</li>
+            <li>Record each segment.</li>
+            <li>Import into DAW and trim unwanted parts.</li>
+            <li>Adjust track volumes and combine in order.</li>
+            <li>Export in a suitable format such as MP3, MP4 or WAV.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- 1.4 -->
+      <details class="note">
+        <summary>1.4 Create Video Content</summary>
+        <div class="note-body">
+          <p>When working on a video project as a team, agree in advance on content, style and technical standards. This ensures clips from different members combine consistently.</p>
+
+          <h4>Technical Standards</h4>
+          <table class="ntable">
+            <tr><th>Standard</th><th>Explanation</th></tr>
+            <tr><td>Screen Format / Aspect Ratio</td><td>Screen ratio. 16:9 is common for widescreen. Some social media uses 1:1 square.</td></tr>
+            <tr><td>Orientation</td><td>Landscape (horizontal) or portrait (vertical).</td></tr>
+            <tr><td>Resolution</td><td>Level of image detail. 1920×1080 pixels is common Full HD. 4K is higher quality but files can be large.</td></tr>
+            <tr><td>File Format</td><td>File type for saving video. All members should use the same or compatible format.</td></tr>
+          </table>
+
+          <h4>Brief and Shot List</h4>
+          <p>A <span class="kw">brief</span> explains what the team/film crew must do. A <span class="kw">shot list</span> records the scenes or shots to film. It can include shot number, scene number, camera movement, camera angle, description and notes.</p>
+          <ul>
+            <li><b>Wide-angle Shot</b> — shows the setting and surroundings.</li>
+            <li><b>Close-up Shot</b> — shows details of a person/object up close.</li>
+            <li><b>Panning</b> — moving the camera left/right or up/down.</li>
+            <li><b>Tracking</b> — moving the camera to follow an object or person.</li>
+          </ul>
+
+          <h4>Rough Cut and Final Edit</h4>
+          <p>The first assembled version of recorded clips in a video editing application is called a <span class="kw">rough cut</span>. Review the rough cut to decide scene order, length and needed additions. The final edited version can be called the final cut.</p>
+
+          <h4>Titles, Captions and Cutaways</h4>
+          <table class="ntable">
+            <tr><th>Term</th><th>Meaning</th></tr>
+            <tr><td>Title Card</td><td>Title screen/segment shown at the start of a video.</td></tr>
+            <tr><td>Subtitle</td><td>Text explaining each segment of the video.</td></tr>
+            <tr><td>Caption</td><td>Text naming/describing people or objects in a scene.</td></tr>
+            <tr><td>Auto-caption</td><td>Feature that automatically converts speech to text using speech recognition. Check accuracy.</td></tr>
+            <tr><td>Cutaway</td><td>Inserting another related short scene instead of showing the main speaker. E.g. showing a speaker's hands or surroundings during an interview.</td></tr>
+          </table>
+          <div class="callout warn">Get filming/publishing permission from everyone appearing in the video. If using photos, songs or video clips you don't own, check license and permission.</div>
+
+          <h4>Step-by-Step</h4>
+          <ol>
+            <li>Define the video theme and audience.</li>
+            <li>Agree on aspect ratio, orientation, resolution and file format.</li>
+            <li>Write a brief and shot list.</li>
+            <li>Film the needed scenes with a smartphone, tablet or camera.</li>
+            <li>Import clips into an editing application and create a rough cut.</li>
+            <li>Change scene order, add cutaways and cut unwanted parts.</li>
+            <li>Add titles, subtitles and captions.</li>
+            <li>Review the final video and save/export.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- 1.5 -->
+      <details class="note">
+        <summary>1.5 Host and Embed Content</summary>
+        <div class="note-body">
+          <p>Before uploading audio and video files online, check the hosting service's requirements. Each service may have limits on file format, file size or video length.</p>
+
+          <h4>Export and Compression</h4>
+          <p>Export files in a suitable format before uploading. Compressed files are smaller and faster to export and upload. For example, a 3-minute audio clip might be about 3 MB as MP3, about 15 MB as FLAC, and over 30 MB as WAV. For video, uncompressed AVI can be much larger than compressed MP4.</p>
+
+          <h4>Upload and Privacy Settings</h4>
+          <ul>
+            <li><b>Public</b> — anyone on the internet can search and view.</li>
+            <li><b>Private</b> — only permitted people or those with the relevant link can view.</li>
+          </ul>
+          <p>Private settings are good for privacy, but some platforms may restrict embedding. Choose based on who should see it and the purpose.</p>
+
+          <h4>Metadata</h4>
+          <p><span class="kw">Metadata</span> is data that describes other data. Media files can include the content's title, creator, duration and technical quality.</p>
+          <table class="ntable">
+            <tr><th>Metadata Type</th><th>Explanation</th></tr>
+            <tr><td>Duration</td><td>Length of audio/video.</td></tr>
+            <tr><td>Title</td><td>Podcast name, episode name or song title.</td></tr>
+            <tr><td>Creator</td><td>Name of the creator.</td></tr>
+            <tr><td>Resolution / Quality</td><td>Video quality, audio bitrate or compression type.</td></tr>
+          </table>
+
+          <h4>Embedding</h4>
+          <p>After uploading to a hosting service, get the URL or embed link. In the multimedia platform, add the relevant media block and insert the URL. Then website visitors can play it via the embedded player without going to the original hosting service.</p>
+          <div class="callout info"><b>Embedding in Offline Presentations —</b> In a presentation that doesn't need internet, you can insert media files directly into the document/slide. However, file size can become large. Users can play/stop via player controls.</div>
+
+          <h4>Step-by-Step</h4>
+          <ol>
+            <li>Export audio/video files in an accepted format.</li>
+            <li>Compare file size and duration with the hosting service's limits.</li>
+            <li>Upload to the chosen hosting/streaming service.</li>
+            <li>Add title, description, creator and other metadata.</li>
+            <li>Choose public/private or other privacy settings.</li>
+            <li>Copy the embed URL and insert it into the appropriate block on the website page/post.</li>
+            <li>Use Preview to test that the player appears and can play.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- 1.6 -->
+      <details class="note">
+        <summary>1.6 Extended Reality — VR, AR, MR</summary>
+        <div class="note-body">
+          <p><span class="kw">XR (Extended Reality)</span> is a collective name for technologies that make multimedia more interactive. XR includes Virtual Reality (VR), Augmented Reality (AR) and Mixed Reality (MR).</p>
+
+          <h4>VR — Virtual Reality (Computer-generated environment)</h4>
+          <p>VR uses 3D models to create a simulated environment separate from the real world. The user wears a VR headset and experiences the environment through displays and headphones. Sensors in the headset detect head/eye movement and adjust the view accordingly.</p>
+          <ul>
+            <li>VR games let you play as if in another world.</li>
+            <li>In education, dangerous tasks can be practised via simulation.</li>
+            <li>In medical education, body/disease conditions can be explained visually.</li>
+          </ul>
+
+          <h4>AR — Augmented Reality (Digital information overlaid on the real world)</h4>
+          <p>AR does not replace the real environment but overlays digital information or 3D objects onto it. It can be used via smartphone, tablet or wearable technology like AR glasses.</p>
+          <ul>
+            <li>Games that show animation characters on the real location through the phone camera.</li>
+            <li>Apps like Google Lens read text in an image via OCR and overlay translated text on the original image.</li>
+            <li>A car's head-up display shows speed and warnings in the driver's view.</li>
+          </ul>
+
+          <h4>MR — Mixed Reality</h4>
+          <p>MR is more interactive than AR. Digital objects are not only shown in the real world but can also interact with real objects. For example, a virtual ball placed on a real table can bounce back when it hits the table.</p>
+          <p>MR applications need to understand objects, edges and space in the environment. They also model physics rules like gravity. This can require significant computing power and use real-time cloud computing and AI.</p>
+
+          <h4>VR, AR and MR Comparison</h4>
+          <table class="ntable">
+            <tr><th>Technology</th><th>Relationship with real world</th><th>Example</th></tr>
+            <tr><td>VR</td><td>Replaces the real environment with a simulation.</td><td>Viewing a 3D virtual tour with a VR headset.</td></tr>
+            <tr><td>AR</td><td>Overlays a digital layer on the real world.</td><td>Using a phone to place virtual furniture in a room.</td></tr>
+            <tr><td>MR</td><td>Digital objects and real objects can interact.</td><td>A virtual ball bouncing off a real table.</td></tr>
+          </table>
+
+          <h4>Where XR Can Be Used</h4>
+          <ul>
+            <li><b>Education</b> — practise experiments in a virtual environment.</li>
+            <li><b>Gaming</b> — provide more immersive game experiences.</li>
+            <li><b>Healthcare</b> — explain disease conditions to patients and for training.</li>
+            <li><b>Architecture/Design</b> — view and test building designs in 3D before construction.</li>
+          </ul>
+          <div class="callout warn">Some XR experiences require special equipment and high-power computers. Limitations include cost, battery, device compatibility, motion sickness, privacy and ability to distinguish from the real world.</div>
+        </div>
+      </details>
+
+      <!-- GLOSSARY -->
+      <details class="note">
+        <summary>📖 Glossary</summary>
+        <div class="note-body">
+          <table class="ntable">
+            <tr><th>English Term</th><th>Meaning</th></tr>
+            <tr><td>AI (Artificial Intelligence)</td><td>Technology that enables computers to perform tasks associated with human intelligence.</td></tr>
+            <tr><td>AI Hallucination</td><td>Incorrect or invented information generated by an AI system and presented as if true.</td></tr>
+            <tr><td>Aspect Ratio</td><td>The proportional relationship between an image's width and height.</td></tr>
+            <tr><td>Audio Bitrate</td><td>The amount of audio data represented per second.</td></tr>
+            <tr><td>Caption</td><td>Text that identifies or describes content in a video.</td></tr>
+            <tr><td>Compression</td><td>A process that reduces file size.</td></tr>
+            <tr><td>Cutaway</td><td>A related shot inserted into a scene to add information or context.</td></tr>
+            <tr><td>DAW (Digital Audio Workstation)</td><td>Software for recording, editing, mixing and exporting audio.</td></tr>
+            <tr><td>Embed</td><td>To place media or content from another service inside a page or document.</td></tr>
+            <tr><td>File Format</td><td>The structure used to store data in a file.</td></tr>
+            <tr><td>Generative AI</td><td>AI that creates new content in response to prompts.</td></tr>
+            <tr><td>Hosting Service</td><td>A service that stores online content and makes it accessible.</td></tr>
+            <tr><td>Metadata</td><td>Data that describes other data or a media file.</td></tr>
+            <tr><td>Multimedia</td><td>Content combining media types such as text, images, audio and video.</td></tr>
+            <tr><td>Multimedia Platform</td><td>A service for creating, organising, sharing and viewing various media.</td></tr>
+            <tr><td>Outline Plan</td><td>A summary of the parts and order of a programme.</td></tr>
+            <tr><td>Post</td><td>An item published in a blog or social media feed, often in date order.</td></tr>
+            <tr><td>Resolution</td><td>The number of pixels used to represent an image or video.</td></tr>
+            <tr><td>Rough Cut</td><td>The first assembled edit of a video.</td></tr>
+            <tr><td>Script</td><td>The prepared words to be spoken or recorded.</td></tr>
+            <tr><td>Segment</td><td>A section of an audio or video programme.</td></tr>
+            <tr><td>Shot List</td><td>A list of the shots required for a video.</td></tr>
+            <tr><td>Streaming</td><td>Playing media over a network without downloading the whole file first.</td></tr>
+            <tr><td>VR (Virtual Reality)</td><td>An immersive computer-generated 3D environment.</td></tr>
+            <tr><td>AR (Augmented Reality)</td><td>Digital information added to a view of the real world.</td></tr>
+            <tr><td>MR (Mixed Reality)</td><td>Digital objects interact with real-world surroundings.</td></tr>
+            <tr><td>XR (Extended Reality)</td><td>A collective term including VR, AR and MR.</td></tr>
+            <tr><td>Widget</td><td>A small component that adds a function to a website or application.</td></tr>
+            <tr><td>Wearable Technology</td><td>Electronic technology designed to be worn on the body.</td></tr>
+          </table>
+        </div>
+      </details>
+
+      <!-- PRACTICAL PROJECT -->
+      <details class="note">
+        <summary>🛠️ Practical Project — School Sports Day Multimedia</summary>
+        <div class="note-body">
+          <ol>
+            <li><b>Project Aim</b> — inform students, teachers and parents about the school Sports Day.</li>
+            <li><b>Platform</b> — choose a blog website or presentation.</li>
+            <li><b>Text</b> — write two short articles about Sports Day. Include images.</li>
+            <li><b>Audio</b> — create a 1–3 minute podcast or interview audio file.</li>
+            <li><b>Video</b> — film key moments of Sports Day and add titles and captions.</li>
+            <li><b>Hosting</b> — upload audio/video to a suitable service.</li>
+            <li><b>Embed</b> — insert the hosting link into the website or presentation.</li>
+            <li><b>XR Idea</b> — write one idea for using AR/VR for Sports Day.</li>
+            <li><b>Final Check</b> — check spelling, audio quality, video playback, links and privacy settings.</li>
+          </ol>
+          <div class="callout tip"><b>Answering Exam Questions —</b> When answering, don't just give a definition; include examples and reasons. For "Explain" questions, relate why/how. For "Describe" questions, state features and how it works. For "Compare" questions, include both similarities and differences.</div>
+        </div>
+      </details>
+    </section>
+
+    <!-- ================= EXAM ================= -->
+    <section id="tab-exam" class="screen">
+      <div id="examStartScreen" class="exam-start">
+        <img src="logo1.png" alt="Logo" style="width:80px;height:80px;object-fit:contain;margin-bottom:8px">
+        <h2>Oxford Computing 9 — Unit 1 Exam</h2>
+        <p style="color:#5a6a85;margin:0">Creative Media: Multimedia Content</p>
+        <div class="grid">
+          <div><b>30 × 1 mark</b><span>Multiple Choice</span></div>
+          <div><b>10 × 1 mark</b><span>Fill in the Blank</span></div>
+          <div><b>10 × 1 mark</b><span>Matching</span></div>
+          <div><b>10 × 3 marks</b><span>Short Questions</span></div>
+          <div><b>4 × 5 marks</b><span>Long Questions</span></div>
+          <div><b>Total 100</b><span>Time: 60 minutes</span></div>
+        </div>
+        <div class="rules">
+          <b>⚠️ Exam Rules</b>
+          <ul>
+            <li>When the exam starts, <b>Auto Fullscreen</b> will activate. If you exit fullscreen, a warning will appear.</li>
+            <li><b>Copy / Paste / Right-click / Cut</b> are disabled during the exam.</li>
+            <li>If you switch to another tab, a warning will be counted. 5 warnings will auto-submit the exam.</li>
+            <li>When the 60 minutes are up, the exam will auto-submit.</li>
+            <li>After submitting, you will see your score, your answers, correct answers and explanations.</li>
+          </ul>
+        </div>
+        <button class="btn btn-gold" style="font-size:17px;padding:16px 40px" onclick="startExam()">🚀 Start Exam</button>
+      </div>
+
+      <div id="examRunner" style="display:none">
+        <div class="exam-top">
+          <div>⏱ <span class="timer" id="timerDisplay">60:00</span></div>
+          <div class="progress-wrap">
+            <div style="font-size:12px;color:#5a6a85;font-weight:700;margin-bottom:4px">Answered: <span id="answeredCount">0</span> / 64 questions</div>
+            <div class="progress-bar"><i id="progressFill"></i></div>
+          </div>
+          <button class="btn btn-danger" style="padding:9px 18px;font-size:13.5px" onclick="confirmSubmit()">Submit</button>
+        </div>
+        <div id="examArea"></div>
+        <div class="submit-bar">
+          <button class="btn btn-gold" style="font-size:16px;padding:16px 30px" onclick="confirmSubmit()">✅ Exam Complete — Submit</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RESULT ================= -->
+    <section id="tab-result" class="screen">
+      <div id="resultBox"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= OVERLAY ================= -->
+<div id="overlay">
+  <div class="box">
+    <h2 id="ovTitle">⚠️ Warning</h2>
+    <p id="ovMsg"></p>
+    <button class="btn btn-gold" id="ovBtn" onclick="reenterFullscreen()">Re-enter Fullscreen</button>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   HOUSE OF J&S — OXFORD COMPUTING 9 UNIT 1 (ENGLISH ONLY)
+   ===================================================================== */
+const PASSWORD = 'HJS2026';
+const EXAM_SECONDS = 60 * 60;
+const LETTERS = 'ABCDEFGHIJ';
+
+let studentName = '';
+let examActive = false;
+let examBuilt = false;
+let timerId = null;
+let timeLeft = EXAM_SECONDS;
+let violations = 0;
+let submitted = false;
+
+/* ---------------- LOGIN ---------------- */
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const n = document.getElementById('studentName').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const err = document.getElementById('loginErr');
+  if(!n){ err.textContent = 'Please enter your student name.'; return; }
+  if(p !== PASSWORD){ err.textContent = 'Incorrect password. (Get it from your teacher)'; return; }
+  err.textContent = '';
+  studentName = n;
+  try{ sessionStorage.setItem('hjs_user', n); }catch(e){}
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('userName').textContent = n;
+});
+
+function logout(){
+  if(examActive && !confirm('The exam is still in progress. If you leave, your answers will be lost. Continue?')) return;
+  try{ sessionStorage.removeItem('hjs_user'); }catch(e){}
+  location.reload();
+}
+
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', function(){
+    if(examActive){
+      alert('The exam is still in progress. You can only switch to another page after submitting.');
+      return;
+    }
+    switchTab(this.dataset.tab);
+  });
+});
+function switchTab(name){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active', s.id==='tab-'+name));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* =====================================================================
+   ANTI-CHEAT
+   ===================================================================== */
+document.addEventListener('contextmenu', e=>{ if(examActive){ e.preventDefault(); return false; } });
+document.addEventListener('copy', e=>{ if(examActive){ e.preventDefault(); } });
+document.addEventListener('cut', e=>{ if(examActive){ e.preventDefault(); } });
+document.addEventListener('paste', e=>{
+  if(examActive && !e.target.matches('input,textarea')){ e.preventDefault(); }
+});
+document.addEventListener('dragstart', e=>{ if(examActive){ e.preventDefault(); } });
+document.addEventListener('keydown', function(e){
+  if(!examActive) return;
+  const k = e.key.toLowerCase();
+  if(e.key === 'F12'){ e.preventDefault(); return false; }
+  if((e.ctrlKey||e.metaKey) && ['c','x','a','p','s','u','v'].includes(k)){ e.preventDefault(); return false; }
+  if((e.ctrlKey||e.metaKey) && e.shiftKey && ['i','j','c'].includes(k)){ e.preventDefault(); return false; }
+});
+document.addEventListener('visibilitychange', function(){
+  if(examActive && document.hidden){
+    registerViolation('Switching to another tab/window was detected. Please return to the exam window.');
+  }
+});
+document.addEventListener('fullscreenchange', function(){
+  if(examActive && !document.fullscreenElement){
+    registerViolation('You exited fullscreen. You must remain in fullscreen during the exam.');
+  }
+});
+
+function registerViolation(msg){
+  if(!examActive || submitted) return;
+  violations++;
+  if(violations >= 5){
+    showOverlay('5 violations reached. The exam will be auto-submitted.');
+    setTimeout(()=>{ hideOverlay(); doSubmit(); }, 2600);
+    return;
+  }
+  showOverlay(msg + '<br><br><b>Warning ' + violations + ' / 5</b>');
+}
+
+function showOverlay(html){
+  document.getElementById('ovMsg').innerHTML = html;
+  document.getElementById('overlay').classList.add('show');
+}
+function hideOverlay(){ document.getElementById('overlay').classList.remove('show'); }
+
+function reenterFullscreen(){
+  hideOverlay();
+  const el = document.documentElement;
+  if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
+function goFullscreen(){
+  const el = document.documentElement;
+  try{
+    if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if(el.msRequestFullscreen) el.msRequestFullscreen();
+  }catch(e){}
+}
+function exitFullscreen(){
+  try{ if(document.fullscreenElement) document.exitFullscreen(); }catch(e){}
+}
+
+/* =====================================================================
+   QUESTION BANK
+   ===================================================================== */
+
+/* ---------- SECTION A : 30 MCQ (1 mark each) ---------- */
+const MCQ = [
+{q:'What is multimedia?',
+ o:['A single type of digital file, such as a text document',
+    'Digital content that combines media types such as text, images, audio and video',
+    'A programming language used to build websites',
+    'A type of computer hardware used for video editing'],
+ a:1,
+ e:'Multimedia is digital content that combines different media types such as text, images, audio and video. A single media type (e.g. a text-only document) is not multimedia.'},
+
+{q:'WordPress, Blogger and Wix are examples of which platform type?',
+ o:['Website hosting / blogging platforms','Social media platforms','Learning platforms','Audio hosting services'],
+ a:0,
+ e:'These three are platforms for creating websites/blogs. Moodle/Canvas are learning platforms, YouTube/Vimeo are video hosting, SoundCloud/Podbean are audio hosting.'},
+
+{q:'Which of these is NOT a factor to consider when choosing a multimedia platform?',
+ o:['Audience and privacy','Cost and storage limits','Content suitability','The colour of the teacher\'s pen'],
+ a:3,
+ e:'When choosing a platform, consider audience, cost, storage, privacy and supported media types. The colour of the teacher\'s pen is not a technical consideration.'},
+
+{q:'A post on a blog is best used for…',
+ o:['News and updates displayed in date order','Permanent information such as About Us','Storing large video files','Creating a website template'],
+ a:0,
+ e:'A post is suitable for news/updates shown in chronological order (newest at top). For permanent information like About Us, use a Page.'},
+
+{q:'Which content is most suitable for a page rather than a post?',
+ o:['Today\'s sports results','"About Us" and "Contact Us" information','A weekly news update','A breaking news story'],
+ a:1,
+ e:'A Page is for permanent, separate content (About Us, Contact Us). News/results change over time, so they should be Posts.'},
+
+{q:'What is a widget on a website?',
+ o:['A small tool or component that adds a feature to a website',
+    'A type of computer virus',
+    'The main heading of a web page',
+    'A file format for audio'],
+ a:0,
+ e:'A widget is a small tool/component that adds features like audio, video or social media to a website.'},
+
+{q:'What is the main purpose of a hosting service?',
+ o:['To design a website\'s colour scheme',
+    'To store files or website content online so they can be accessed',
+    'To write text content for a blog',
+    'To edit video clips'],
+ a:1,
+ e:'A hosting service stores files/website content online and makes them accessible to users.'},
+
+{q:'Which service is designed specifically for hosting video?',
+ o:['Podbean','Vimeo','SoundCloud','Mixcloud'],
+ a:1,
+ e:'YouTube and Vimeo are video hosting services. SoundCloud, Mixcloud and Podbean are for audio hosting.'},
+
+{q:'An AI system produces a convincing but completely false fact. This is called…',
+ o:['A bug report','AI hallucination','Data compression','A rough cut'],
+ a:1,
+ e:'AI hallucination is when AI produces incorrect or invented information and presents it as true. Always check AI-generated text.'},
+
+{q:'Which tool shows a reviewer\'s edits so they can be accepted or rejected?',
+ o:['Find and Replace','Track Changes','Auto-caption','Loop playback'],
+ a:1,
+ e:'Track Changes shows editors\' changes as mark-up, allowing you to accept or reject them.'},
+
+{q:'Which tool would you use to change every occurrence of "Sports day" to "Sports Day"?',
+ o:['Track Changes','Comments','Find and Replace','Zoom'],
+ a:2,
+ e:'Find and Replace searches for a word/phrase and replaces it throughout, avoiding manual edits one by one.'},
+
+{q:'Proofing a document means…',
+ o:['Checking spelling, grammar, accuracy and formatting before publishing',
+    'Deleting the whole document',
+    'Uploading the file to a host',
+    'Converting the file to MP3'],
+ a:0,
+ e:'Proofing checks spelling, grammar, accuracy and formatting before publishing.'},
+
+{q:'Why is a word processor often better than typing long text directly into a website template?',
+ o:['It makes the website load faster',
+    'It provides stronger editing, spell-check and formatting tools',
+    'It automatically translates text into Burmese',
+    'It removes the need for a hosting service'],
+ a:1,
+ e:'Word processors have more complete editing, spell-check and formatting tools, which is easier for long texts.'},
+
+{q:'What does DAW stand for?',
+ o:['Digital Audio Workstation','Data Access Widget','Digital Aspect Width','Direct Audio Web'],
+ a:0,
+ e:'DAW = Digital Audio Workstation. It is software for recording, editing, mixing and exporting audio.'},
+
+{q:'Which of these is NOT a segment of an audio programme?',
+ o:['Introduction','Jingle','Closing remarks','Aspect ratio'],
+ a:3,
+ e:'Aspect ratio is the width-to-height ratio of a video/image, not a segment of an audio programme.'},
+
+{q:'What is the purpose of a jingle?',
+ o:['To summarise the programme',
+    'To make the programme easily recognised with a short piece of music or sound',
+    'To test the microphone level',
+    'To store the audio file online'],
+ a:1,
+ e:'A jingle is a short piece of music/sound that makes the programme memorable. Summarising is the job of the closing remarks.'},
+
+{q:'Why should you make a test recording before recording a real programme?',
+ o:['To check volume, distortion and background noise',
+    'To increase the file size',
+    'To change the file format',
+    'To improve the internet speed'],
+ a:0,
+ e:'A test recording checks the volume level, distortion and background noise before the real recording.'},
+
+{q:'16:9 is an example of a…',
+ o:['File format','Aspect ratio','Audio bitrate','Resolution'],
+ a:1,
+ e:'16:9 is an aspect ratio (width 16 to height 9). It is common for widescreen video.'},
+
+{q:'1920 × 1080 pixels is commonly known as…',
+ o:['4K','Full HD','Standard Definition','Square format'],
+ a:1,
+ e:'1920 × 1080 is Full HD. 4K has more pixels and usually larger files.'},
+
+{q:'A rough cut is…',
+ o:['The first assembled version of a video',
+    'The final published video',
+    'A type of camera movement',
+    'The title screen of a video'],
+ a:0,
+ e:'A rough cut is the first assembled edit of recorded clips. It is reviewed and then refined into the final cut.'},
+
+{q:'A cutaway shot is…',
+ o:['A shot of something related to the scene, inserted to add detail or context',
+    'The very first shot of a film',
+    'A shot taken only from a drone',
+    'A shot that is deleted from the final video'],
+ a:0,
+ e:'A cutaway is a related short shot inserted to add detail or context, e.g. showing a speaker\'s hands during an interview.'},
+
+{q:'Which shot type shows a large area or the setting?',
+ o:['Close-up','Wide shot','Tracking shot','Cutaway'],
+ a:1,
+ e:'A wide-angle/wide shot shows the setting and surroundings. A close-up shows details up close.'},
+
+{q:'Moving the camera to follow a moving subject is called…',
+ o:['Panning','Tracking','Zooming','Trimming'],
+ a:1,
+ e:'Tracking moves the camera to follow a moving subject. Panning is moving the camera left/right from a fixed position.'},
+
+{q:'Which audio file is normally the smallest for the same recording?',
+ o:['WAV','FLAC','MP3','Uncompressed PCM'],
+ a:2,
+ e:'MP3 uses compression, making it the smallest. WAV and PCM are uncompressed; FLAC is lossless, so larger.'},
+
+{q:'Metadata is…',
+ o:['Data that describes other data or a media file',
+    'A type of video codec',
+    'The main content of a document',
+    'A method of compression'],
+ a:0,
+ e:'Metadata is data that describes other data, e.g. title, creator, duration, resolution.'},
+
+{q:'Which of these is NOT metadata for a text document?',
+ o:['The author\'s name','The date it was last saved','The words written inside the document','The file size'],
+ a:2,
+ e:'The words inside the document are the content, not metadata. Author, save date and file size are metadata.'},
+
+{q:'A video set to "private" or "restricted" can usually be viewed by…',
+ o:['Anyone on the internet',
+    'Only permitted users or people with the required link/access',
+    'Only the platform\'s owner',
+    'Nobody at all'],
+ a:1,
+ e:'Private settings allow only permitted users or those with the required link/access to view it. Some platforms may also prevent embedding.'},
+
+{q:'VR differs from AR because VR…',
+ o:['Adds digital objects to the real world',
+    'Replaces the user\'s view with a computer-generated environment',
+    'Only works on paper',
+    'Does not need any device'],
+ a:1,
+ e:'VR replaces the real world with a computer-generated environment. AR overlays digital information on the real world.'},
+
+{q:'Which is an example of AR?',
+ o:['Wearing a headset to explore a completely simulated 3D world',
+    'Using a phone camera to place virtual furniture in a real room',
+    'Playing an audio podcast',
+    'Editing a video timeline'],
+ a:1,
+ e:'AR overlays digital objects on the real environment. Placing virtual furniture in a room via phone camera is AR. Exploring a fully simulated world with a headset is VR.'},
+
+{q:'How does an embedded media player work?',
+ o:['It downloads the whole file to the visitor\'s computer before playing',
+    'It plays hosted media inside the page without the visitor leaving the page',
+    'It only works offline',
+    'It converts video into text'],
+ a:1,
+ e:'An embedded player plays media stored on a hosting service directly inside the page. Visitors do not need to go to the original site.'}
+];
+
+/* ---------- SECTION B : 10 FILL IN THE BLANK (1 mark each) ---------- */
+const FILL = [
+{q:'________ is digital content that combines media types such as text, images, audio and video.',
+ ans:['multimedia'], disp:'Multimedia',
+ e:'Multimedia combines multiple media types (text, images, audio, video).'},
+
+{q:'A ________ is a separate section of a website such as "About Us".',
+ ans:['page'], disp:'Page',
+ e:'A Page is for permanent, separate content like About Us. A Post is for time-ordered news.'},
+
+{q:'A small tool that adds a feature (such as audio or video) to a website is called a ________.',
+ ans:['widget'], disp:'Widget',
+ e:'A widget is a small component that adds a function to a website/app.'},
+
+{q:'Incorrect or invented information produced by AI and presented as true is called AI ________.',
+ ans:['hallucination','ai hallucination'], disp:'Hallucination (AI hallucination)',
+ e:'AI hallucination is when AI produces false or invented information and presents it as true. Always verify AI output.'},
+
+{q:'A ________ Audio Workstation (DAW) is software used to record, edit and export audio.',
+ ans:['digital'], disp:'Digital',
+ e:'DAW = Digital Audio Workstation. It is used for recording, arranging, editing, mixing and exporting audio.'},
+
+{q:'The relationship between the width and height of a video is called the ________.',
+ ans:['aspect ratio','aspect'], disp:'Aspect ratio',
+ e:'Aspect ratio is the width-to-height ratio. 16:9 is common for widescreen; 1:1 is square.'},
+
+{q:'The first assembled edit of a video is called a ________.',
+ ans:['rough cut','roughcut'], disp:'Rough cut',
+ e:'A rough cut is the first assembled edit. It is reviewed and refined into the final cut.'},
+
+{q:'________ is data that describes another file, such as its title, creator and duration.',
+ ans:['metadata'], disp:'Metadata',
+ e:'Metadata describes other data, e.g. title, creator, duration of a media file.'},
+
+{q:'________ Reality replaces the user\'s view with a computer-generated 3D environment.',
+ ans:['virtual'], disp:'Virtual (VR)',
+ e:'Virtual Reality (VR) replaces the real view with a computer-generated 3D environment using a headset and sensors.'},
+
+{q:'________ Reality adds digital information on top of a view of the real world.',
+ ans:['augmented'], disp:'Augmented (AR)',
+ e:'Augmented Reality (AR) overlays digital information on the real world without replacing it.'}
+];
+
+/* ---------- SECTION C : 10 MATCHING (1 mark each) ---------- */
+const MATCH_PAIRS = [
+{a:'Track Changes',    b:'Shows reviewer edits so they can be accepted or rejected'},
+{a:'Jingle',           b:'A short piece of music or sound that identifies an audio programme'},
+{a:'Cutaway',          b:'A related shot inserted into a scene to add detail or context'},
+{a:'Metadata',         b:'Data that describes another file or media file'},
+{a:'Embed',            b:'Placing media from another service inside a page or document'},
+{a:'Widget',           b:'A small component that adds a feature to a website'},
+{a:'Script',           b:'The prepared words to be spoken or recorded'},
+{a:'Shot list',        b:'A list of the shots required for a video'},
+{a:'Streaming',        b:'Playing media over a network without downloading the whole file'},
+{a:'Mixed Reality',    b:'Digital objects can interact with real-world surroundings'}
+];
+/* display order of column B (scrambled) */
+const MATCH_ORDER = [5,2,8,0,7,3,9,1,4,6];
+function matchLetterFor(pairIndex){
+  const pos = MATCH_ORDER.indexOf(pairIndex);
+  return LETTERS[pos];
+}
+
+/* ---------- SECTION D : 10 SHORT QUESTIONS (3 marks each) ---------- */
+const SHORT = [
+{q:'Define multimedia and give two examples of media types.',
+ keys:[['combin','mix','include','consist'],['text'],['image','picture','audio','video','sound']],
+ model:'Multimedia is digital content that combines different media types such as text, images, audio and video.',
+ e:'To score: (1) state that multiple media are combined, (2) mention text, (3) give at least one example of image/audio/video.'},
+
+{q:'State three factors to consider when choosing a multimedia platform.',
+ keys:[['audience','viewer'],['cost','price','budget','storage'],['privacy','security']],
+ model:'Audience and privacy, cost and storage limits, content suitability, and privacy/security settings.',
+ e:'Consider audience, cost/storage, content suitability and privacy/security. Three correct factors = full marks.'},
+
+{q:'Explain the difference between a post and a page.',
+ keys:[['date','time','chronolog','order','news','update'],['permanent','stable','static'],['about us','contact','example']],
+ model:'A post is for news and updates shown in date order, while a page is for permanent information such as About Us or Contact Us.',
+ e:'Post = time-ordered news/updates. Page = permanent information (About Us, Contact Us). Include an example for full marks.'},
+
+{q:'What is an AI hallucination and how can a student avoid it?',
+ keys:[['incorrect','false','wrong','invent','not true'],['ai','artificial','generat'],['check','verify','fact','cross']],
+ model:'AI hallucination is incorrect or invented information produced by AI and presented as true. To avoid it, always verify AI-generated facts using reliable sources and correct or remove anything that is wrong.',
+ e:'AI hallucination = AI creates false information. To avoid: verify facts using reliable sources and correct/remove wrong information.'},
+
+{q:'Explain the purpose of a test recording before recording an audio programme.',
+ keys:[['test','check'],['volume','level','loud','distortion'],['noise','background','microphone']],
+ model:'A test recording checks the recording level, prevents distortion and reveals background noise so that problems can be fixed before the real recording.',
+ e:'A test recording checks (1) recording level, (2) avoids distortion, (3) finds background noise.'},
+
+{q:'What is a rough cut and why is it useful?',
+ keys:[['first','initial','assemble','draft'],['review','check','watch','order','length'],['change','improve','final cut','edit']],
+ model:'A rough cut is the first assembled edit of a video. It is useful because the team can review scene order and length, then make changes to produce the final cut.',
+ e:'Rough cut = first assembled edit. Useful because you can review scene order/length and then edit to make the final cut.'},
+
+{q:'Give two technical standards a video team should agree on before filming.',
+ keys:[['aspect ratio','16:9','screen format'],['resolution','1920','1080','full hd','4k','orientation','landscape','portrait'],['file format','mp4','avi','format']],
+ model:'Aspect ratio (for example 16:9), orientation (landscape or portrait), resolution (for example 1920×1080 Full HD) and file format (for example MP4).',
+ e:'Technical standards include aspect ratio, orientation, resolution and file format. Two correct = 2 marks, three correct = 3 marks.'},
+
+{q:'What is metadata? Give two examples for an audio file.',
+ keys:[['describe','about','information about','data about'],['title','creator','artist','name'],['duration','length','bitrate','format','size']],
+ model:'Metadata is data that describes a media file. For audio it can include the title, creator/artist, duration and bitrate.',
+ e:'Metadata = data that describes other data. Examples: title, creator, duration, bitrate, file format.'},
+
+{q:'Explain the difference between VR and AR, with one example of each.',
+ keys:[['replace','substitut','simulat','computer-generated'],['add','overlay','on top','real world'],['headset','game','furniture','phone','google lens','example']],
+ model:'VR replaces the real world with a computer-generated simulated environment (for example exploring a 3D world with a headset). AR adds digital information on top of the real world (for example viewing virtual furniture in a room through a phone).',
+ e:'VR = replaces the real world (simulation). AR = overlays digital information on the real world. Include an example for full marks.'},
+
+{q:'Why should you check privacy settings before publishing content?',
+ keys:[['personal','private','information'],['who','public','viewer','access'],['safety','safe','consent','permission','copyright']],
+ model:'Checking privacy settings controls who can see the content, protects personal information, and makes sure consent and copyright rules are respected.',
+ e:'Privacy settings control who can view the content. They protect personal information and ensure consent and copyright are respected.'}
+];
+
+/* ---------- SECTION E : 4 LONG QUESTIONS (5 marks each) ---------- */
+const LONG = [
+{q:'Describe the steps you would follow to create and publish a multimedia text post on a blog. Include review tools and final checks.',
+ keys:[['purpose','audience','title','plan'],
+       ['draft','write','word processor','word process'],
+       ['track changes','comment','review'],
+       ['proof','spell','grammar','accuracy'],
+       ['image','preview','publish']],
+ model:'1) Decide the purpose, audience and title. 2) Draft the text, using a word processor for long content. 3) Ask team members to review using Track Changes and Comments. 4) Proofread spelling, grammar, facts and formatting. 5) Add images, preview on different screen sizes and publish.',
+ e:'5 marks for: purpose/audience, drafting, review with Track Changes/Comments, proofing, and images/preview/publish. 1 mark each.'},
+
+{q:'Explain the process of creating an audio programme, from planning to export. Name the tools and key terms.',
+ keys:[['outline','plan','segment','intro','jingle','closing'],
+       ['script'],
+       ['microphone','test recording','level'],
+       ['daw','record','timeline','track','trim'],
+       ['mixer','volume','export','mp3','wav']],
+ model:'1) Set the purpose and audience. 2) Write an outline plan with intro, jingle, topic segments and closing remarks. 3) Write a script. 4) Check the microphone and levels with a test recording. 5) Record each segment. 6) Import into a DAW, trim clips and arrange tracks. 7) Balance volume with the mixer. 8) Export as MP3 or WAV.',
+ e:'Key steps: outline plan (segments), script, test recording, DAW record/trim/tracks, mixer volume, export (MP3/WAV). 1 mark per step.'},
+
+{q:'Describe how a team should plan and edit a video for a school event. Include technical standards, shot types and editing terms.',
+ keys:[['aspect ratio','resolution','orientation','file format','technical'],
+       ['brief','shot list'],
+       ['wide','close-up','close up','panning','tracking','shot'],
+       ['rough cut','trim','scene'],
+       ['title','subtitle','caption','cutaway','final','export']],
+ model:'Agree on technical standards (aspect ratio, orientation, resolution, file format) and write a brief and shot list. Record using a range of shot types such as wide shots, close-ups, panning and tracking. Import the clips, create a rough cut, trim unwanted footage, reorder scenes and add cutaways. Add titles, subtitles and captions, then review and export the final cut.',
+ e:'Marks for: technical standards, brief/shot list, shot types, rough cut/trim, titles/captions/cutaway/final export.'},
+
+{q:'Compare VR, AR and MR, and explain two uses and two limitations of XR in education.',
+ keys:[['vr','virtual','replace','simulat'],
+       ['ar','augmented','overlay','add'],
+       ['mr','mixed','interact'],
+       ['education','training','practise','simulation','healthcare','architecture'],
+       ['cost','battery','motion sickness','privacy','compatibility','processing']],
+ model:'VR replaces the real world with a computer-generated environment; AR overlays digital information on the real world; MR allows digital objects to interact with real surroundings. Uses in education include practising dangerous or expensive procedures safely in a simulation, and visualising 3D models in architecture or healthcare. Limitations include cost of equipment, device compatibility and processing power, battery life, privacy concerns and motion sickness.',
+ e:'5 marks: VR/AR/MR differences (3), uses (1), limitations (1). Use examples.'}
+];
+
+/* =====================================================================
+   EXAM BUILD
+   ===================================================================== */
+function startExam(){
+  if(examBuilt) return;
+  const ok = confirm('The exam will start now.\n\n• Time: 60 minutes\n• Questions: 64 / 100 marks\n• Auto Fullscreen will activate\n• Copy/Paste disabled\n\nStart?');
+  if(!ok) return;
+
+  goFullscreen();
+  buildExam();
+  examBuilt = true;
+  examActive = true;
+  submitted = false;
+  violations = 0;
+  document.getElementById('examStartScreen').style.display = 'none';
+  document.getElementById('examRunner').style.display = 'block';
+  timeLeft = EXAM_SECONDS;
+  updateTimer();
+  timerId = setInterval(tick, 1000);
+  attachAnswerWatchers();
+  window.scrollTo({top:0});
+}
+
+function buildExam(){
+  const area = document.getElementById('examArea');
+  let html = '';
+
+  /* --- A: MCQ --- */
+  html += '<div class="sec-title">SECTION A — Multiple Choice <span>30 questions × 1 mark = 30 marks</span></div>';
+  MCQ.forEach((q,i)=>{
+    html += '<div class="qcard">';
+    html += '<p class="qtext">'+(i+1)+'. '+q.q+'</p>';
+    html += '<div class="opts">';
+    q.o.forEach((opt,j)=>{
+      html += '<label class="opt" data-mcq="'+i+'">'
+            + '<input type="radio" name="mcq'+i+'" value="'+j+'">'
+            + '<span><b>'+LETTERS[j]+'.</b> '+opt+'</span></label>';
+    });
+    html += '</div></div>';
+  });
+
+  /* --- B: FILL --- */
+  html += '<div class="sec-title">SECTION B — Fill in the Blank <span>10 questions × 1 mark = 10 marks</span></div>';
+  FILL.forEach((q,i)=>{
+    html += '<div class="qcard">';
+    html += '<p class="qtext">'+(i+1)+'. '+q.q+'</p>';
+    html += '<input class="fill" type="text" id="fill'+i+'" placeholder="Type your answer…" autocomplete="off">';
+    html += '</div>';
+  });
+
+  /* --- C: MATCHING --- */
+  html += '<div class="sec-title">SECTION C — Matching <span>10 items × 1 mark = 10 marks</span></div>';
+  html += '<div class="qcard">';
+  html += '<p class="qtext">Match each term in Column A with the correct meaning in Column B.</p>';
+  html += '<div class="colB-list">';
+  MATCH_ORDER.forEach((pairIdx,pos)=>{
+    html += '<div><b>'+LETTERS[pos]+'.</b> '+MATCH_PAIRS[pairIdx].b+'</div>';
+  });
+  html += '</div>';
+  html += '<table class="match-table"><tr><th style="width:34%">Column A</th><th>Column B — Select</th></tr>';
+  MATCH_PAIRS.forEach((p,i)=>{
+    html += '<tr><td class="colA">'+(i+1)+'. '+p.a+'</td><td>';
+    html += '<select id="match'+i+'"><option value="">— Select —</option>';
+    MATCH_ORDER.forEach((_,pos)=>{ html += '<option value="'+LETTERS[pos]+'">'+LETTERS[pos]+'</option>'; });
+    html += '</select></td></tr>';
+  });
+  html += '</table></div>';
+
+  /* --- D: SHORT --- */
+  html += '<div class="sec-title">SECTION D — Short Questions <span>10 questions × 3 marks = 30 marks</span></div>';
+  SHORT.forEach((q,i)=>{
+    html += '<div class="qcard">';
+    html += '<p class="qtext">'+(i+1)+'. '+q.q+' <span style="color:#1d4ed8;font-size:12.5px">[3 marks]</span></p>';
+    html += '<textarea class="ans" id="short'+i+'" placeholder="Write your answer here…"></textarea>';
+    html += '</div>';
+  });
+
+  /* --- E: LONG --- */
+  html += '<div class="sec-title">SECTION E — Long Questions <span>4 questions × 5 marks = 20 marks</span></div>';
+  LONG.forEach((q,i)=>{
+    html += '<div class="qcard">';
+    html += '<p class="qtext">'+(i+1)+'. '+q.q+' <span style="color:#1d4ed8;font-size:12.5px">[5 marks]</span></p>';
+    html += '<textarea class="ans long" id="long'+i+'" placeholder="Write a detailed answer with paragraphs…"></textarea>';
+    html += '</div>';
+  });
+
+  area.innerHTML = html;
+
+  /* option highlight + select style */
+  area.querySelectorAll('.opt').forEach(l=>{
+    l.addEventListener('click', function(){
+      const name = 'mcq' + this.dataset.mcq;
+      area.querySelectorAll('input[name="'+name+'"]').forEach(r=>r.closest('.opt').classList.remove('sel'));
+      this.classList.add('sel');
+    });
+  });
+  area.querySelectorAll('.match-table select').forEach(s=>{
+    s.addEventListener('change', function(){
+      this.classList.toggle('picked', this.value !== '');
+      updateProgress();
+    });
+  });
+}
+
+function attachAnswerWatchers(){
+  const area = document.getElementById('examArea');
+  area.addEventListener('input', updateProgress);
+  area.addEventListener('change', updateProgress);
+}
+
+function countAnswered(){
+  let n = 0;
+  for(let i=0;i<MCQ.length;i++){ if(document.querySelector('input[name="mcq'+i+'"]:checked')) n++; }
+  for(let i=0;i<FILL.length;i++){ if(document.getElementById('fill'+i).value.trim()) n++; }
+  for(let i=0;i<MATCH_PAIRS.length;i++){ if(document.getElementById('match'+i).value) n++; }
+  for(let i=0;i<SHORT.length;i++){ if(document.getElementById('short'+i).value.trim()) n++; }
+  for(let i=0;i<LONG.length;i++){ if(document.getElementById('long'+i).value.trim()) n++; }
+  return n;
+}
+function updateProgress(){
+  const n = countAnswered();
+  const total = MCQ.length + FILL.length + MATCH_PAIRS.length + SHORT.length + LONG.length;
+  document.getElementById('answeredCount').textContent = n;
+  document.getElementById('progressFill').style.width = Math.round(n/total*100) + '%';
+}
+
+/* =====================================================================
+   TIMER
+   ===================================================================== */
+function tick(){
+  timeLeft--;
+  updateTimer();
+  if(timeLeft <= 0){
+    clearInterval(timerId);
+    alert('The 60 minutes are up. The exam will be auto-submitted.');
+    doSubmit();
+  }
+}
+function updateTimer(){
+  const m = Math.floor(timeLeft/60);
+  const s = timeLeft % 60;
+  const el = document.getElementById('timerDisplay');
+  el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  el.classList.toggle('low', timeLeft <= 300);
+}
+
+/* =====================================================================
+   SUBMIT & SCORING
+   ===================================================================== */
+function confirmSubmit(){
+  const answered = countAnswered();
+  const total = MCQ.length + FILL.length + MATCH_PAIRS.length + SHORT.length + LONG.length;
+  const left = total - answered;
+  let msg = 'Are you sure you want to submit the exam?';
+  if(left > 0) msg += '\n\n⚠️ You have ' + left + ' unanswered questions.';
+  if(confirm(msg)) doSubmit();
+}
+
+function doSubmit(){
+  if(submitted) return;
+  submitted = true;
+  examActive = false;
+  clearInterval(timerId);
+  exitFullscreen();
+  hideOverlay();
+
+  const R = { mcq:[], fill:[], match:[], short:[], long:[] };
+  let sMcq=0, sFill=0, sMatch=0, sShort=0, sLong=0;
+
+  /* --- MCQ --- */
+  MCQ.forEach((q,i)=>{
+    const sel = document.querySelector('input[name="mcq'+i+'"]:checked');
+    const val = sel ? parseInt(sel.value,10) : -1;
+    const correct = (val === q.a);
+    if(correct) sMcq++;
+    R.mcq.push({ q:q, student: val, correct: correct });
+  });
+
+  /* --- FILL --- */
+  FILL.forEach((q,i)=>{
+    const raw = document.getElementById('fill'+i).value.trim();
+    const low = raw.toLowerCase().replace(/\s+/g,' ');
+    const correct = q.ans.some(a => low === a.toLowerCase() || (low.length>2 && low.includes(a.toLowerCase())));
+    if(correct) sFill++;
+    R.fill.push({ q:q, student: raw, correct: correct });
+  });
+
+  /* --- MATCH --- */
+  MATCH_PAIRS.forEach((p,i)=>{
+    const picked = document.getElementById('match'+i).value;
+    const correctLetter = matchLetterFor(i);
+    const correct = (picked === correctLetter);
+    if(correct) sMatch++;
+    R.match.push({ q:p, student: picked, correctLetter: correctLetter, correct: correct });
+  });
+
+  /* --- SHORT --- */
+  SHORT.forEach((q,i)=>{
+    const raw = document.getElementById('short'+i).value.trim();
+    const got = scoreKeywords(raw, q.keys, 3);
+    sShort += got;
+    R.short.push({ q:q, student: raw, got: got, max:3 });
+  });
+
+  /* --- LONG --- */
+  LONG.forEach((q,i)=>{
+    const raw = document.getElementById('long'+i).value.trim();
+    const got = scoreKeywords(raw, q.keys, 5);
+    sLong += got;
+    R.long.push({ q:q, student: raw, got: got, max:5 });
+  });
+
+  const totalScore = sMcq + sFill + sMatch + sShort + sLong;
+
+  renderResult({
+    name: studentName,
+    total: totalScore,
+    parts: { mcq:sMcq, fill:sFill, match:sMatch, short:sShort, long:sLong },
+    detail: R
+  });
+
+  document.getElementById('tabResult').style.display = 'inline-block';
+  switchTab('result');
+}
+
+function scoreKeywords(text, keys, max){
+  const t = (text||'').toLowerCase();
+  if(!t.trim()) return 0;
+  let n = 0;
+  keys.forEach(syns=>{
+    if(syns.some(s=>t.includes(s.toLowerCase()))) n++;
+  });
+  let mark = Math.min(n, max);
+  if(mark === 0 && t.length > 60) mark = 1;
+  return mark;
+}
+
+/* =====================================================================
+   RESULT RENDER
+   ===================================================================== */
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderResult(data){
+  const total = data.total;
+  const pct = Math.round(total);
+  const pass = total >= 40;
+  let grade = 'F', gcolor = '#d64545';
+  if(total >= 90){ grade='A (Distinction)'; gcolor='#0f9d58'; }
+  else if(total >= 80){ grade='B (Very Good)'; gcolor='#1d4ed8'; }
+  else if(total >= 70){ grade='C (Good)'; gcolor='#7a5300'; }
+  else if(total >= 60){ grade='D (Satisfactory)'; gcolor='#a06a00'; }
+  else if(total >= 40){ grade='E (Pass)'; gcolor='#b06a00'; }
+
+  let html = '';
+
+  /* HERO */
+  html += '<div class="score-hero">';
+  html += '<div class="score-circle" style="--p:'+pct+'%">';
+  html += '<div class="num">'+total+'</div><div class="den">/ 100</div>';
+  html += '</div>';
+  html += '<h2>'+esc(data.name)+'\'s Score</h2>';
+  html += '<div class="pct">'+pct+'% &nbsp;·&nbsp; '+(pass?'PASS ✅':'FAIL ❌')+'</div>';
+  html += '<div class="grade-badge" style="background:'+gcolor+';color:#fff">'+grade+'</div>';
+  html += '</div>';
+
+  /* BREAKDOWN */
+  html += '<div class="breakdown">';
+  html += '<div><b>'+data.parts.mcq+' / 30</b><span>Section A · MCQ</span></div>';
+  html += '<div><b>'+data.parts.fill+' / 10</b><span>Section B · Fill in the Blank</span></div>';
+  html += '<div><b>'+data.parts.match+' / 10</b><span>Section C · Matching</span></div>';
+  html += '<div><b>'+data.parts.short+' / 30</b><span>Section D · Short Questions</span></div>';
+  html += '<div><b>'+data.parts.long+' / 20</b><span>Section E · Long Questions</span></div>';
+  html += '</div>';
+
+  html += '<div class="callout info" style="margin-bottom:20px"><b>Review —</b> Below is a question-by-question breakdown showing <b>your answer</b>, the <b>correct answer</b>, <b>marks earned</b> and <b>why it was right/wrong</b>.</div>';
+
+  /* --- A REVIEW --- */
+  html += '<div class="sec-title">SECTION A — Multiple Choice <span>'+data.parts.mcq+' / 30</span></div>';
+  data.detail.mcq.forEach((r,i)=>{
+    const cls = r.correct ? 'ok' : 'bad';
+    html += '<div class="rev-card '+cls+'">';
+    html += '<div class="rev-head"><div class="qn">Q'+(i+1)+'. '+esc(r.q.q)+'</div>';
+    html += '<span class="mark-pill '+cls+'">'+(r.correct?'✓ 1 / 1':'✗ 0 / 1')+'</span></div>';
+    const stuTxt = r.student >= 0 ? (LETTERS[r.student]+'. '+r.q.o[r.student]) : '— Not answered —';
+    html += '<div class="rev-line stu"><b>Your answer:</b> '+esc(stuTxt)+'</div>';
+    html += '<div class="rev-line cor"><b>Correct answer:</b> '+LETTERS[r.q.a]+'. '+esc(r.q.o[r.q.a])+'</div>';
+    html += '<div class="rev-exp"><b>Explanation:</b> '+esc(r.q.e)+'</div>';
+    if(!r.correct){
+      html += '<div class="rev-exp" style="border-left-color:#d64545;background:#fff5f5"><b>Why it was wrong:</b> '
+            + (r.student < 0
+                ? 'You did not answer this question. No answer = 0 marks. If unsure, you should still choose the best option.'
+                : '"'+esc(r.q.o[r.student])+'" is incorrect. The correct answer is '+LETTERS[r.q.a]+'.')
+            + '</div>';
+    }
+    html += '</div>';
+  });
+
+  /* --- B REVIEW --- */
+  html += '<div class="sec-title">SECTION B — Fill in the Blank <span>'+data.parts.fill+' / 10</span></div>';
+  data.detail.fill.forEach((r,i)=>{
+    const cls = r.correct ? 'ok' : 'bad';
+    html += '<div class="rev-card '+cls+'">';
+    html += '<div class="rev-head"><div class="qn">Q'+(i+1)+'. '+esc(r.q.q)+'</div>';
+    html += '<span class="mark-pill '+cls+'">'+(r.correct?'✓ 1 / 1':'✗ 0 / 1')+'</span></div>';
+    html += '<div class="rev-line stu"><b>Your answer:</b> '+ (r.student ? esc(r.student) : '— Not answered —') +'</div>';
+    html += '<div class="rev-line cor"><b>Correct answer:</b> '+esc(r.q.disp)+'</div>';
+    html += '<div class="rev-exp"><b>Explanation:</b> '+esc(r.q.e)+'</div>';
+    if(!r.correct){
+      html += '<div class="rev-exp" style="border-left-color:#d64545;background:#fff5f5"><b>Why it was wrong:</b> '
+            + (r.student
+                ? 'Your answer "'+esc(r.student)+'" is not the correct term/spelling. The correct answer is <b>'+esc(r.q.disp)+'</b>. You need to remember vocabulary exactly.'
+                : 'You left this blank. No answer = 0 marks. The correct answer is <b>'+esc(r.q.disp)+'</b>.')
+            + '</div>';
+    }
+    html += '</div>';
+  });
+
+  /* --- C REVIEW --- */
+  html += '<div class="sec-title">SECTION C — Matching <span>'+data.parts.match+' / 10</span></div>';
+  data.detail.match.forEach((r,i)=>{
+    const cls = r.correct ? 'ok' : 'bad';
+    const pairIdx = MATCH_ORDER.indexOf(LETTERS.indexOf(r.student));
+    const stuText = r.student ? (r.student + '. ' + (pairIdx >= 0 ? MATCH_PAIRS[pairIdx].b : '—')) : '— Not answered —';
+    const corIdx = MATCH_ORDER.indexOf(LETTERS.indexOf(r.correctLetter));
+    html += '<div class="rev-card '+cls+'">';
+    html += '<div class="rev-head"><div class="qn">Q'+(i+1)+'. '+esc(r.q.a)+'</div>';
+    html += '<span class="mark-pill '+cls+'">'+(r.correct?'✓ 1 / 1':'✗ 0 / 1')+'</span></div>';
+    html += '<div class="rev-line stu"><b>Your answer:</b> '+esc(stuText)+'</div>';
+    html += '<div class="rev-line cor"><b>Correct answer:</b> '+r.correctLetter+'. '+esc(MATCH_PAIRS[corIdx].b)+'</div>';
+    html += '<div class="rev-exp"><b>Explanation:</b> <b>'+esc(r.q.a)+'</b> means — '+esc(r.q.b)+'.</div>';
+    if(!r.correct){
+      html += '<div class="rev-exp" style="border-left-color:#d64545;background:#fff5f5"><b>Why it was wrong:</b> The meaning you chose does not match <b>'+esc(r.q.a)+'</b>. You need to memorise the meaning of each term precisely.</div>';
+    }
+    html += '</div>';
+  });
+
+  /* --- D REVIEW --- */
+  html += '<div class="sec-title">SECTION D — Short Questions <span>'+data.parts.short+' / 30</span></div>';
+  data.detail.short.forEach((r,i)=>{
+    const cls = r.got === r.max ? 'ok' : (r.got > 0 ? 'part' : 'bad');
+    html += '<div class="rev-card '+cls+'">';
+    html += '<div class="rev-head"><div class="qn">Q'+(i+1)+'. '+esc(r.q.q)+'</div>';
+    html += '<span class="mark-pill '+cls+'">'+r.got+' / '+r.max+'</span></div>';
+    html += '<div class="rev-line stu"><b>Your answer:</b> '+(r.student ? esc(r.student) : '— Not answered —')+'</div>';
+    html += '<div class="rev-line cor"><b>Model answer:</b> '+esc(r.q.model)+'</div>';
+    html += '<div class="rev-exp"><b>Marking guide:</b> '+esc(r.q.e)+'</div>';
+    html += '<div class="keys-line"><b>Key points needed for marks:</b> '
+          + r.q.keys.map(k=>k[0]).join(' · ') + '</div>';
+    if(r.got < r.max){
+      html += '<div class="rev-exp" style="border-left-color:#f0a500;background:#fffbf0"><b>Why not full marks:</b> '
+            + (r.student
+                ? 'Your answer is missing '+(r.q.keys.length - r.got)+' key point(s). Compare with the model answer and add the missing points.'
+                : 'You did not answer this question at all. 0 marks. Always try to write something rather than leaving it blank.')
+            + '</div>';
+    }
+    html += '</div>';
+  });
+
+  /* --- E REVIEW --- */
+  html += '<div class="sec-title">SECTION E — Long Questions <span>'+data.parts.long+' / 20</span></div>';
+  data.detail.long.forEach((r,i)=>{
+    const cls = r.got === r.max ? 'ok' : (r.got > 0 ? 'part' : 'bad');
+    html += '<div class="rev-card '+cls+'">';
+    html += '<div class="rev-head"><div class="qn">Q'+(i+1)+'. '+esc(r.q.q)+'</div>';
+    html += '<span class="mark-pill '+cls+'">'+r.got+' / '+r.max+'</span></div>';
+    html += '<div class="rev-line stu"><b>Your answer:</b> '+(r.student ? esc(r.student) : '— Not answered —')+'</div>';
+    html += '<div class="rev-line cor"><b>Model answer:</b> '+esc(r.q.model)+'</div>';
+    html += '<div class="rev-exp"><b>Marking guide:</b> '+esc(r.q.e)+'</div>';
+    html += '<div class="keys-line"><b>Key points needed for marks:</b> '
+          + r.q.keys.map(k=>k[0]).join(' · ') + '</div>';
+    if(r.got < r.max){
+      html += '<div class="rev-exp" style="border-left-color:#f0a500;background:#fffbf0"><b>Why not full marks:</b> '
+            + (r.student
+                ? 'You are missing '+(r.max - r.got)+' mark(s). You need to write in more detail, using paragraphs and examples. "Describe/Explain" questions require examples and reasoning.'
+                : 'You did not answer this question. Each long question is worth 5 marks, so leaving it blank costs 5 marks.')
+            + '</div>';
+    }
+    html += '</div>';
+  });
+
+  /* FOOTER */
+  html += '<div class="callout tip" style="margin-top:24px;font-size:15px"><b>Study Advice —</b> Re-read the Study Notes for the questions you got wrong. Pay special attention to <b>Section '+ (data.parts.short < 18 ? 'D (Short Questions)' : 'A (MCQ)') +'</b> where further practice is needed. Review the Glossary daily.</div>';
+
+  html += '<div style="text-align:center;margin-top:26px">';
+  html += '<button class="btn btn-ghost" onclick="location.reload()">🔄 Restart</button>';
+  html += '</div>';
+
+  document.getElementById('resultBox').innerHTML = html;
+}
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+(function(){
+  try{
+    const u = sessionStorage.getItem('hjs_user');
+    if(u){
+      studentName = u;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('userName').textContent = u;
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
